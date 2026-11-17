@@ -99,7 +99,7 @@ async function showApp() {
   }
   // interaction settings disabled in the creator's TikTok settings are greyed out; none are pre-checked
   for (const [id, off] of [['cComment', creator.comment_disabled], ['cDuet', creator.duet_disabled], ['cStitch', creator.stitch_disabled]]) { $(id).checked = false; $(id).disabled = !!off; }
-  videos = (await api('videos')).videos || [];
+  try { videos = (await api('videos', { access_token: S.t.access_token })).videos || []; } catch (e) { msg('Could not load videos: ' + e.message, 'err'); videos = []; }
   $('video').innerHTML = '<option value="" selected disabled>Select a video…</option>' + videos.map((v, i) => `<option value="${i}">${v.date} ${v.time} · ${v.label}</option>`).join('');
   if (!videos.length) $('video').innerHTML = '<option value="">No approved videos waiting</option>';
   ['video', 'privacy', 'title', 'cDisclose', 'cYourBrand', 'cBranded'].forEach(id => $(id).addEventListener('input', refresh));
